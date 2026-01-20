@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Concepta | Phi-3 Mini Study Buddy</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-logo">
+                <div class="logo-icon">C</div>
+                <h1>Concepta</h1>
+            </div>
+            <p class="loading-subtitle">Starting Phi-3 Mini AI Study Buddy...</p>
+            <div class="loading-spinner"></div>
+            <div class="loading-status" id="loadingStatus">Checking Ollama connection...</div>
+        </div>
+    </div>
+
+    <!-- Main App Container -->
+    <div class="app-container" id="appContainer">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <div class="logo">
+                    <div class="logo-icon">C</div>
+                    <h1>Concepta</h1>
+                    <span class="model-badge">Phi-3 Mini</span>
+                </div>
+                <p class="tagline">Local AI Study Buddy • 3.8B Parameters</p>
+            </div>
+            
+            <div class="header-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun"></i>
+                    <i class="fas fa-moon"></i>
+                </button>
+                <div class="connection-status" id="connectionStatus">
+                    <div class="status-dot"></div>
+                    <span>Checking...</span>
+                </div>
+                <button class="settings-btn" id="settingsBtn" aria-label="Settings">
+                    <i class="fas fa-cog"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Sidebar Navigation -->
+            <nav class="sidebar">
+                <div class="sidebar-nav">
+                    <button class="nav-item active" data-tab="explainer">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Explain</span>
+                    </button>
+                    
+                    <button class="nav-item" data-tab="summarizer">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Summarize</span>
+                    </button>
+                    
+                    <button class="nav-item" data-tab="quiz">
+                        <i class="fas fa-question-circle"></i>
+                        <span>Quiz</span>
+                    </button>
+                    
+                    <button class="nav-item" data-tab="flashcards">
+                        <i class="fas fa-layer-group"></i>
+                        <span>Flashcards</span>
+                    </button>
+                </div>
+                
+                <div class="sidebar-footer">
+                    <div class="model-info">
+                        <div class="model-label">Local Model</div>
+                        <div class="model-name" id="modelName">phi3:mini</div>
+                        <div class="model-specs">3.8B • ~4GB RAM</div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <!-- Concept Explainer Tab -->
+                <section id="explainer" class="tab-content active">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-lightbulb"></i> Concept Explainer</h2>
+                        <p class="tab-description">Get simple explanations with Phi-3 Mini. Works best with concise topics.</p>
+                    </div>
+                    
+                    <div class="performance-tip">
+                        <i class="fas fa-info-circle"></i>
+                        <span><strong>Phi-3 Tip:</strong> Keep topics under 500 characters for best results.</span>
+                    </div>
+                    
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="topicInput">
+                                Topic or Question
+                                <span class="char-count" id="topicCharCount">0/500</span>
+                            </label>
+                            <textarea 
+                                id="topicInput" 
+                                placeholder="E.g., What is photosynthesis? Explain quantum computing basics, How do neural networks work?"
+                                rows="3"
+                                maxlength="500"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="controls-group">
+                            <div class="difficulty-selector">
+                                <label>Difficulty Level:</label>
+                                <div class="difficulty-buttons">
+                                    <button class="difficulty-btn active" data-level="beginner">Beginner</button>
+                                    <button class="difficulty-btn" data-level="intermediate">Intermediate</button>
+                                    <button class="difficulty-btn" data-level="advanced">Advanced</button>
+                                </div>
+                            </div>
+                            
+                            <button class="generate-btn" id="explainBtn">
+                                <i class="fas fa-magic"></i>
+                                Generate with Phi-3
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="output-section">
+                        <div class="output-header">
+                            <h3>Explanation</h3>
+                            <div class="output-actions">
+                                <button class="action-btn" id="copyExplain" title="Copy">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                                <button class="action-btn" id="focusModeExplain" title="Focus Mode">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="output-content" id="explainOutput">
+                            <div class="placeholder-output">
+                                <i class="fas fa-robot"></i>
+                                <p>Your explanation will appear here...</p>
+                                <small>Powered by Phi-3 Mini (3.8B parameters)</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Notes Summarizer Tab -->
+                <section id="summarizer" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-file-alt"></i> Notes Summarizer</h2>
+                        <p class="tab-description">Summarize notes for quick review. Phi-3 works best with concise text.</p>
+                    </div>
+                    
+                    <div class="performance-tip">
+                        <i class="fas fa-info-circle"></i>
+                        <span><strong>Phi-3 Tip:</strong> Keep notes under 2000 characters for optimal summarization.</span>
+                    </div>
+                    
+                    <div class="input-section">
+                        <div class="text-input-area">
+                            <label for="notesInput">
+                                Paste your notes
+                                <span class="char-count" id="notesCharCount">0/2000</span>
+                            </label>
+                            <textarea 
+                                id="notesInput" 
+                                placeholder="Paste your lecture notes, textbook content, or any study material... (Max 2000 chars)"
+                                rows="8"
+                                maxlength="2000"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="controls-group">
+                            <div class="summary-options">
+                                <label for="summaryLength">Summary Length:</label>
+                                <select id="summaryLength">
+                                    <option value="concise">Concise (Best for Phi-3)</option>
+                                    <option value="medium" selected>Medium</option>
+                                    <option value="detailed">Detailed</option>
+                                </select>
+                            </div>
+                            
+                            <button class="generate-btn" id="summarizeBtn">
+                                <i class="fas fa-compress-alt"></i>
+                                Summarize with Phi-3
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="output-section">
+                        <div class="output-header">
+                            <h3>Summary</h3>
+                            <div class="output-actions">
+                                <button class="action-btn" id="copySummary" title="Copy">
+                                    <i class="far fa-copy"></i>
+                                </button>
+                                <button class="action-btn" id="focusModeSummary" title="Focus Mode">
+                                    <i class="fas fa-expand"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="output-content" id="summaryOutput">
+                            <div class="placeholder-output">
+                                <i class="fas fa-file-alt"></i>
+                                <p>Your summary will appear here...</p>
+                                <small>Optimized for Phi-3's 3.8B parameters</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quiz Generator Tab -->
+                <section id="quiz" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-question-circle"></i> Quiz Generator</h2>
+                        <p class="tab-description">Create quizzes from topics. Phi-3 works best with 3-5 questions.</p>
+                    </div>
+                    
+                    <div class="performance-tip">
+                        <i class="fas fa-info-circle"></i>
+                        <span><strong>Phi-3 Tip:</strong> Focus on 1-2 concepts and keep content under 1000 characters.</span>
+                    </div>
+                    
+                    <div class="input-section">
+                        <div class="input-group">
+                            <label for="quizInput">
+                                Topic or Content for Quiz
+                                <span class="char-count" id="quizCharCount">0/1000</span>
+                            </label>
+                            <textarea 
+                                id="quizInput" 
+                                placeholder="E.g., World War II timeline, Python functions, Cellular respiration... (Max 1000 chars)"
+                                rows="4"
+                                maxlength="1000"
+                            ></textarea>
+                        </div>
+                        
+                        <div class="controls-group">
+                            <div class="quiz-settings">
+                                <div class="setting-group">
+                                    <label for="quizType">Quiz Type:</label>
+                                    <select id="quizType">
+                                        <option value="mixed" selected>Mixed (Best for Phi-3)</option>
+                                        <option value="mcq">Multiple Choice</option>
+                                        <option value="truefalse">True/False</option>
+                                        <option value="short">Short Answer</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-group">
+                                    <label for="quizDifficulty">Difficulty:</label>
+                                    <select id="quizDifficulty">
+                                        <option value="easy">Easy</option>
+                                        <option value="medium" selected>Medium</option>
+                                        <option value="hard">Hard</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="setting-group">
+                                    <label for="questionCount">Questions:</label>
+                                    <select id="questionCount">
+                                        <option value="2">2</option>
+                                        <option value="3" selected>3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <button class="generate-btn" id="generateQuizBtn">
+                                <i class="fas fa-brain"></i>
+                                Generate Quiz with Phi-3
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="output-section">
+                        <div class="output-header">
+                            <h3>Generated Quiz</h3>
+                            <div class="output-actions">
+                                <button class="action-btn" id="exportQuiz" title="Export">
+                                    <i class="fas fa-download"></i>
+                                </button>
+                                <button class="action-btn" id="practiceMode" title="Practice">
+                                    <i class="fas fa-play"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="output-content" id="quizOutput">
+                            <div class="placeholder-output">
+                                <i class="fas fa-question-circle"></i>
+                                <p>Your quiz will appear here...</p>
+                                <small>Phi-3 generates 3-5 questions best</small>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Flashcards Tab -->
+                <section id="flashcards" class="tab-content">
+                    <div class="tab-header">
+                        <h2><i class="fas fa-layer-group"></i> Flashcards</h2>
+                        <p class="tab-description">Create and review flashcards. Phi-3 works best with 5-8 cards.</p>
+                    </div>
+                    
+                    <div class="performance-tip">
+                        <i class="fas fa-info-circle"></i>
+                        <span><strong>Phi-3 Tip:</strong> Keep content focused and under 800 characters for best flashcards.</span>
+                    </div>
+                    
+                    <div class="flashcards-container">
+                        <div class="flashcards-controls">
+                            <div class="input-group">
+                                <label for="flashcardsInput">
+                                    Topic or Content for Flashcards
+                                    <span class="char-count" id="flashcardsCharCount">0/800</span>
+                                </label>
+                                <textarea 
+                                    id="flashcardsInput" 
+                                    placeholder="E.g., French vocabulary, Biology terms, Programming concepts... (Max 800 chars)"
+                                    rows="3"
+                                    maxlength="800"
+                                ></textarea>
+                            </div>
+                            
+                            <div class="flashcard-actions">
+                                <button class="generate-btn" id="generateFlashcardsBtn">
+                                    <i class="fas fa-plus-circle"></i>
+                                    Generate Flashcards (5-8)
+                                </button>
+                                
+                                <button class="secondary-btn" id="loadFlashcardsBtn">
+                                    <i class="fas fa-folder-open"></i>
+                                    Load Saved
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flashcards-viewer">
+                            <div class="flashcard-nav">
+                                <button class="nav-btn" id="prevCard">
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                
+                                <div class="card-counter">
+                                    <span id="currentCard">0</span> / <span id="totalCards">0</span>
+                                </div>
+                                
+                                <button class="nav-btn" id="nextCard">
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                            
+                            <div class="flashcard" id="flashcard">
+                                <div class="flashcard-inner">
+                                    <div class="flashcard-front">
+                                        <div class="card-header">
+                                            <span class="card-label">Question</span>
+                                            <button class="card-action" id="flipCard">
+                                                <i class="fas fa-sync-alt"></i> Flip
+                                            </button>
+                                        </div>
+                                        <div class="card-content" id="cardQuestion">
+                                            <p>No flashcards loaded. Generate or load flashcards to begin.</p>
+                                        </div>
+                                        <div class="card-footer">
+                                            <div class="card-tags">
+                                                <span class="card-tag">Phi-3 Mini</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flashcard-back">
+                                        <div class="card-header">
+                                            <span class="card-label">Answer</span>
+                                            <button class="card-action" id="flipCardBack">
+                                                <i class="fas fa-sync-alt"></i> Flip
+                                            </button>
+                                        </div>
+                                        <div class="card-content" id="cardAnswer">
+                                            <p>Flip the card to see the answer
